@@ -1,11 +1,11 @@
 import numpy as np
-from scipy.stats import f_oneway
+from scipy.stats import f
 
 price_range = []
 battery = []
 
-with open('mobile_phones.csv') as f:
-    lines = f.readlines()
+with open('mobile_phones.csv') as file:
+    lines = file.readlines()
     for i in lines[1:]:
         line = i.strip().split(',')
         price_range.append(int(line[-1]))
@@ -16,13 +16,25 @@ battery = np.array(battery)
 
 groups = [battery[price_range == level] for level in np.unique(price_range)]
 
-f_stat, p_value = f_oneway(*groups)
+overall_mean = np.mean(battery)
 
-print("F-statistic:", f_stat)
-print("P-value:", p_value)
+ssb = sum(len(group) * (np.mean(group) - overall_mean) ** 2 for group in groups)
+ssw = sum(np.sum((group - np.mean(group)) ** 2) for group in groups)
 
-alpha = 0.05
-if p_value < alpha:
-    print("Reject the null hypothesis: There is a significant difference between group means.")
+df_between = len(groups) - 1
+df_within = len(battery) - len(groups)
+
+msb = ssb / df_between
+msw = ssw / df_within
+
+f_stat = msb / msw
+
+p_value = f.sf(f_stat, df_between, df_within)
+
+print("f-статистика:", f_stat)
+print("p-value:", p_value)
+
+if p_value < 0.05:
+    print("Отвергнуть H0")
 else:
-    print("Fail to reject the null hypothesis: No significant difference between group means.")
+    print("Принять H0")
