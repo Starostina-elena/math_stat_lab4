@@ -46,3 +46,27 @@ for i, ci in enumerate(ci_beta):
 print("Остаточная дисперсия:", sigma_squared)
 print("Доверительный интервал для остаточной дисперсии:", ci_sigma_squared)
 print("Коэффициент детерминации (R^2):", r_squared)
+
+
+# второе задание
+t_stat = beta[1] / se_beta[1]
+p_value = 2 * (1 - stats.t.cdf(abs(t_stat), df=len(y) - X.shape[1]))
+print(f"t-статистика расхода топлива в городе: {t_stat}")
+print(f"p-value расхода топлива в городе: {p_value}")
+
+if p_value < 0.05:
+    print("Коэффициент расхода в городе значим")
+else:
+    print("Коэффициент расхода в городе не значим")
+
+
+# третье задание
+t_stat = beta[2] / se_beta[2]
+p_value = 2 * (1 - stats.t.cdf(abs(t_stat), df=len(y) - X.shape[1]))
+print(f"t-статистика расхода топлива на шоссе: {t_stat}")
+print(f"p-value расхода топлива на шоссе: {p_value}")
+
+if p_value < 0.05:
+    print("Коэффициент расхода на шоссе значим")
+else:
+    print("Коэффициент расхода на шоссе не значим")
